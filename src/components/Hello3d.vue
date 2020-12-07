@@ -10,7 +10,7 @@ export default {
 	name: 'Hello3d',
 	data() {
 		return {
-			name : '',
+			name : 'Name',
 			render: null,
 		};
 	},

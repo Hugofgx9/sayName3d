@@ -14,7 +14,8 @@ void main() {
 
   // import & adjust textures
   vec4 finalTexture = texture2D(u_texture, newUV);
+  vec3 color = vec3(0.0, 0.0, 1.0) + finalTexture.xyz;
 
   //gl_FragColor = texture;
-  gl_FragColor = vec4( finalTexture.xyz, finalTexture.a);
+  gl_FragColor = vec4( color, finalTexture.a);
 }

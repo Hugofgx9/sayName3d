@@ -124,7 +124,7 @@ export default class threeRender {
 	}
 
 	createPlane() {
-		this.planeGeometry = new THREE.PlaneGeometry(1, 1, 1);
+		this.planeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 
 		this.loaderData = new THREE.TextureLoader();
 		this.dataMoshTexture = this.loaderData.load(this.options.imgDataMosh);
@@ -144,11 +144,11 @@ export default class threeRender {
 			// tofixed(1) tronque le nombre avec 1 nombre après la virgule
 				PR: window.devicePixelRatio.toFixed(1)
 			},
-			side: THREE.DoubleSide,
+			//side: THREE.DoubleSide,
 		});
 
 		this.plane = new THREE.Mesh(this.planeGeometry, this.planeMaterial);
-		this.plane.scale.set(200,200,0);
+		this.plane.scale.set(200,200,200);
 
 		this.scene.add(this.plane);
 	}
@@ -166,6 +166,8 @@ export default class threeRender {
 	// Update
 	update() {
 		//this.getSpeed();
+		this.plane.rotation.x += 0.01;
+		this.plane.rotation.z += 0.01;
 		this.renderer.setRenderTarget(this.rt);
 		this.renderer.render(this.rtScene, this.rtCamera);
 
