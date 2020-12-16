@@ -31,7 +31,7 @@ export default class threeRender {
 		this.container.appendChild ( this.renderer.domElement );
 
 		// red background
-		this.renderer.setClearColor( 0x1c1c1c );
+		this.renderer.setClearColor( 0x141414 );
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -66,6 +66,8 @@ export default class threeRender {
 			// Create a geometry of packed bitmap glyphs
 			this.fontGeometry = createGeometry({
 				font: font,
+				align: 'center',
+				with: 2,
 				text: this.options.text,
 			});
 
@@ -77,10 +79,9 @@ export default class threeRender {
 				this.fontMaterial = new THREE.RawShaderMaterial(
 					MSDFShader({
 						map: texture,
-						side: THREE.DoubleSide,
-						transparent: true,
+						opacity: 0.1,
 						negate: false,
-						color: 0xff0000,
+						color: 0xffffff,
 					})
 				);
 
@@ -98,7 +99,7 @@ export default class threeRender {
 			window.innerWidth,
 			window.innerHeight, 
 			{
-				alpha: true,
+				//alpha: true,
 			}
 		);
 
@@ -106,12 +107,12 @@ export default class threeRender {
 		this.rtCamera.position.z = 2.5;
 
 		this.rtScene = new THREE.Scene();
-		//rtScene.background = new THREE.Color("#000000");
+		//this.rtScene.background = new THREE.Color(0x000000);
 
 		this.text = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
 
 		// Adjust text dimensions
-		this.text.position.set(-0.75, -0.4, 0);
+		this.text.position.set(-0.5, 0, 0);
 		this.text.rotation.set(Math.PI, 0, 0);
 		this.text.scale.set(0.006, 0.006, 1);
 
@@ -126,16 +127,12 @@ export default class threeRender {
 	createPlane() {
 		this.planeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 
-		this.loaderData = new THREE.TextureLoader();
-		this.dataMoshTexture = this.loaderData.load(this.options.imgDataMosh);
-
 		this.planeMaterial = new THREE.ShaderMaterial({
 			vertexShader: this.options.planeVertexShader,
 			fragmentShader: this.options.planeFragmentShader,
 			uniforms: {
 				//u_time: { type: 'f', value: 0 },
 				u_texture: { type: 't', value: this.rt.texture },
-				//u_dataMoshTexture: { type: 't', value: this.dataMoshTexture },
 				//u_mouse: { value: this.mouse },
 				u_res: { value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
 				//u_speed: { value: this.targetSpeed },
@@ -166,8 +163,9 @@ export default class threeRender {
 	// Update
 	update() {
 		//this.getSpeed();
-		this.plane.rotation.x += 0.01;
-		this.plane.rotation.z += 0.01;
+		let wheelFact = this.wheelSpeed.value * 0.0005;
+		this.plane.rotation.x += 0.01 + wheelFact;
+		this.plane.rotation.z += 0.01 + wheelFact;
 		this.renderer.setRenderTarget(this.rt);
 		this.renderer.render(this.rtScene, this.rtCamera);
 
@@ -184,13 +182,24 @@ export default class threeRender {
 	}
 
 	listenWindow() {
-			if ('ontouchstart' in window) {
+		this.wheelSpeed = {value: 0};
+
+		//mousemove
+		if ('ontouchstart' in window) {
 			document.addEventListener('touchmove', (ev) => { this.onMouseMove(ev) });
 		} else {
 			window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 			document.addEventListener('mousemove', (ev) => { this.onMouseMove(ev) });
 		}
+		//wheel event
+		document.addEventListener('wheel', (ev) => {
+		console.log(ev);
+			gsap.to(this.wheelSpeed, 1, {
+				value: ev.wheelDeltaY
+			});
+		})
 	}
+
 
 	onWindowResize() {
 		this.updateCamera;

@@ -28,6 +28,10 @@ export default {
 			text: this.name,
 		});
 
+		// document.addEventListener('wheel', function(e) {
+		// 	console.log(e.deltaY);
+		// })
+
 	},
 	methods: {
 		writeYourName() {
@@ -54,25 +58,43 @@ export default {
 </script>
 
 <template>
-	<div ref="container" class="container">
-		<div>
-			<span>Please tell me your name? </span>
-		</div>
-		<div>
-			<span>{{ name }}</span>
-			<span class="cursor">|</span>
+	<div ref="container" id="container">
+		<div class="text">
+			<div>
+				<span>Please tell me your name? </span>
+			</div>
+			<div>
+				<span>{{ name }}</span>
+				<span class="cursor">|</span>
+			</div>
 		</div>
 	</div>
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang='scss' scoped>
+<style lang='scss'>
 
-.cursor {
-	font-weight: 500;
-	font-size: 1.5rem;
+#container {
+	height: 100vh;
 	position: relative;
-	top: 0.2rem;
+
+	canvas {
+		z-index: -2;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.text {
+		padding-top: 40px;
+	}
+
+	.cursor {
+		font-weight: 500;
+		font-size: 1.5rem;
+		position: relative;
+		top: 0.2rem;
+	}
 }
 
 </style>
